@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <title>mbDirect Iframe Testing</title>
+    <style>
+        #popupOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        #popupBox {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 6px;
+        }
+
+        .radio-group,
+        .checkbox-group {
+            margin-top: 10px;
+        }
+
+        #submitBtn {
+            margin-top: 15px;
+            padding: 8px 16px;
+        }
+
+        #contentIframe {
+            width: 100%;
+            height: 1000px;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<div style="text-align: center;">
+    <h2>Merchant Page</h2>
+</div>
+    <!-- Modal Popup -->
+    <div id="popupOverlay">
+        <div id="popupBox">
+            <h2>Iframe Configuration</h2>
+            <form id="popupForm">
+                <label>
+                    <b>URL Token:</b>
+                    <input type="text" id="urlToken" required />
+                </label>
+
+                <label>
+                    <b>Show Logo:</b>
+                    <input type="checkbox" id="showLogo" />
+                </label>
+
+                <div class="radio-group">
+                    <b>Request Type:</b>
+                    <label>
+                        <input type="radio" name="requestType" value="Card" checked />
+                        Card
+                    </label>
+                    <label>
+                        <input type="radio" name="requestType" value="Bank" />
+                        Bank
+                    </label>
+                </div>
+
+                <label>
+                    <b>Environment URL (Optional):</b>
+                    <input type="text" id="environmentUrl" />
+                </label>
+
+                <button type="submit" id="submitBtn">Load PciWeb in IFrame</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Iframe to load URL -->
+    <iframe id="contentIframe" src=""></iframe>
+
+    <script>
+        // Get references
+        const overlay = document.getElementById('popupOverlay');
+        const form = document.getElementById('popupForm');
+        const iframe = document.getElementById('contentIframe');
+
+        // Show popup on load
+        window.onload = function () {
+            overlay.style.display = 'flex';
+        };
+
+        function reload_iframe_utils_js(src) {
+            $('script[src="' + src + '"]').remove();
+            $('<script>').attr('src', src).appendTo('head');
+            // Initialize the iframe message handler with the custom callback
+            var initScript = document.createElement('script');
+            initScript.innerHTML = 'initIframeMessageHandler(customSuccessCallback);';
+            document.head.appendChild(initScript);
+        }
+
+        // Handle form submission
+        form.onsubmit = function (e) {
+            e.preventDefault();
+
+            const token = document.getElementById('urlToken').value.trim();
+            const showLogo = document.getElementById('showLogo').checked;
+            const requestType = document.querySelector('input[name="requestType"]:checked').value;
+            const environment = document.getElementById('environmentUrl').value.trim();
+
+            // Construct URL with query params
+            const baseUrl = environment ? `${environment}/AutoSubmit` : 'https://localhost:44349/AutoSubmit';
+            let url = '';
+            try{
+                url = new URL(baseUrl);
+            } catch (error) {
+                alert('Invalid Environment URL. Be sure to include http:// or https://');
+                return;
+            }
+
+            url.searchParams.set('urlToken', token);
+            showLogo ? {} : url.searchParams.set('br', 'no');
+            url.searchParams.set('requestType', requestType);
+
+            // Set iframe src
+            iframe.src = url.toString();
+            reload_iframe_utils_js(environment ? `${environment}/js/merchant-iframe-utils.js` : 'https://localhost:44349/js/merchant-iframe-utils.js');
+
+            // Hide popup
+            overlay.style.display = 'none';
+        };
+
+        // Define a custom callback function
+        function customSuccessCallback(message) {
+        // For example, redirect to a different page or update the UI (hide iframe and show message to user)
+            window.location.href = "shipping-address.html";
+        }
+    </script>    
+</body>
+</html>
