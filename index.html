@@ -55,6 +55,12 @@
             margin-top: 20px;
             border: 1px solid #ccc;
         }
+        .help-text {
+            font-size: 0.8rem;
+            color: #666666;
+            margin-top: 5px; /* Add some spacing */
+        }
+
     </style>
 </head>
 
@@ -93,6 +99,12 @@
                     <input type="text" id="environmentUrl" />
                 </label>
 
+                <label>
+                    <b>Additional Query Parameters (Delimit by ;)</b>
+                    <input type="text" id="extraQueryParams" />
+                    <div class="help-text">Example: param1=value1;param2=value2</div>
+                </label>
+
                 <button type="submit" id="submitBtn">Load PciWeb in IFrame</button>
             </form>
         </div>
@@ -111,15 +123,6 @@
         window.onload = function () {
             overlay.style.display = 'flex';
         };
-
-        function reload_iframe_utils_js(src) {
-            $('script[src="' + src + '"]').remove();
-            $('<script>').attr('src', src).appendTo('head');
-            // Initialize the iframe message handler with the custom callback
-            var initScript = document.createElement('script');
-            initScript.innerHTML = 'initIframeMessageHandler(customSuccessCallback);';
-            document.head.appendChild(initScript);
-        }
 
         // Handle form submission
         form.onsubmit = function (e) {
@@ -144,6 +147,18 @@
             showLogo ? {} : url.searchParams.set('br', 'no');
             url.searchParams.set('requestType', requestType);
 
+            // Parse additional query parameters
+            const extraParams = document.getElementById('extraQueryParams').value.trim();
+            if (extraParams) {
+                const pairs = extraParams.split(';');
+                pairs.forEach(pair => {
+                    const [key, value] = pair.split('=');
+                    if (key && value) {
+                        url.searchParams.set(key.trim(), value.trim());
+                    }
+                });
+            }
+            
             // Set iframe src
             iframe.src = url.toString();
             reload_iframe_utils_js(environment ? `${environment}/js/merchant-iframe-utils.js` : 'https://localhost:44349/js/merchant-iframe-utils.js');
@@ -156,6 +171,23 @@
         function customSuccessCallback(message) {
         // For example, redirect to a different page or update the UI (hide iframe and show message to user)
             window.location.href = "shipping-address.html";
+        }
+
+        function reload_iframe_utils_js(src) {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = function () {
+                if(typeof initIframeMessageHandler === 'function') {
+                    initIframeMessageHandler(customSuccessCallback);
+                } else {
+                    console.error('initIframeMessageHandler function not found in the loaded script.');
+                }
+            }
+            script.onerror = function() {
+                console.error('Failed to load the merchant-iframe-utils.js script from ' + src);
+            }
+
+            document.head.appendChild(script);
         }
     </script>    
 </body>
