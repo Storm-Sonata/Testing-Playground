@@ -177,7 +177,7 @@
             // For example, redirect to a different page or update the UI (hide iframe and show message to user)
             //window.location.href = "shipping-address.html";
 
-            if(callbackUrl != null){
+            if(callbackUrl != null && callbackUrl !== '') {
                 window.location.href = callbackUrl;
             }
             else {
