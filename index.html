@@ -181,7 +181,7 @@
                 window.location.href = callbackUrl;
             }
             else {
-                window.location.href = "https://mbdirect-testing.com/";
+                window.location.href = "success.html";
             }
 
         }
@@ -192,7 +192,7 @@
             script.src = src;
             script.onload = function () {
                 if(typeof initIframeMessageHandler === 'function') {
-                    initIframeMessageHandler(customSuccessCallback(callbackUrl));
+                    initIframeMessageHandler();
                 } else {
                     console.error('initIframeMessageHandler function not found in the loaded script.');
                 }
