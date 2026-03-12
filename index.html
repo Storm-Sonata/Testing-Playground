@@ -136,7 +136,7 @@
             const token = document.getElementById('urlToken').value.trim();
             const showLogo = document.getElementById('showLogo').checked;
             const requestType = document.querySelector('input[name="requestType"]:checked').value;
-            const environment = document.getElementById('environmentUrl').value.trim();
+            const environment = removeTrailingSlash(document.getElementById('environmentUrl').value.trim());
             const callbackUrl = document.getElementById('callbackUrl').value.trim();
 
             // Construct URL with query params
@@ -203,6 +203,10 @@
 
             document.head.appendChild(script);
         }
+
+        const removeTrailingSlash = (str) => {
+            return str.replace(/\/+$/, '');
+        };
     </script>    
 </body>
 </html>
