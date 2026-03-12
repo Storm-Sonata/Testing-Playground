@@ -137,7 +137,6 @@
             const showLogo = document.getElementById('showLogo').checked;
             const requestType = document.querySelector('input[name="requestType"]:checked').value;
             const environment = removeTrailingSlash(document.getElementById('environmentUrl').value.trim());
-            const callbackUrl = document.getElementById('callbackUrl').value.trim();
 
             // Construct URL with query params
             const baseUrl = environment ? `${environment}/AutoSubmit` : 'https://localhost:44349/AutoSubmit';
@@ -174,14 +173,15 @@
         };
 
         // Define a custom callback function
-        function customSuccessCallback(callbackUrl) {
+        function customSuccessCallback(url) {
             // For example, redirect to a different page or update the UI (hide iframe and show message to user)
             //window.location.href = "shipping-address.html";
+
             if(callbackUrl != null){
                 window.location.href = callbackUrl;
             }
             else {
-                window.location.href = "success.html";
+                window.location.reload();
             }
 
         }
@@ -192,7 +192,7 @@
             script.src = src;
             script.onload = function () {
                 if(typeof initIframeMessageHandler === 'function') {
-                    initIframeMessageHandler();
+                    initIframeMessageHandler(customSuccessCallback.bind(null, callbackUrl));
                 } else {
                     console.error('initIframeMessageHandler function not found in the loaded script.');
                 }
