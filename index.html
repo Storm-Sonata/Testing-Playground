@@ -177,8 +177,8 @@
             // For example, redirect to a different page or update the UI (hide iframe and show message to user)
             //window.location.href = "shipping-address.html";
 
-            if(callbackUrl !== null && callbackUrl !== '') {
-                window.location.href = callbackUrl;
+            if(url !== null && url !== '') {
+                window.location.href = url;
             }
             else {
                 window.location.reload();
@@ -188,11 +188,11 @@
 
         function reload_iframe_utils_js(src) {
             const script = document.createElement('script');
-            const callbackUrl = document.getElementById('callbackUrl').value.trim();
+            const cbUrl = document.getElementById('callbackUrl').value.trim();
             script.src = src;
             script.onload = function () {
                 if(typeof initIframeMessageHandler === 'function') {
-                    initIframeMessageHandler(customSuccessCallback.bind(null, callbackUrl));
+                    initIframeMessageHandler(customSuccessCallback.bind(null, cbUrl));
                 } else {
                     console.error('initIframeMessageHandler function not found in the loaded script.');
                 }
