@@ -149,21 +149,22 @@
             const requestType = document.querySelector('input[name="requestType"]:checked').value;
             const environment = document.querySelector('input[name="environment"]:checked').value;
 
+            let envUrl = '';
             // Construct URL with query params
             switch(environment) {
                 case 'UAT':
-                    environment = 'https://uat.mbdirectweb.cardworks.com';
+                    envUrl = 'https://uat.mbdirectweb.cardworks.com';
                     break;
                 case 'DEV':
-                    environment = '';
+                    envUrl = '';
                     break;
                 case 'Local':
-                    environment = 'https://localhost:44349';
+                    envUrl = 'https://localhost:44349';
                     break;
                 default:
-                    environment = '';
+                    envUrl = '';
             }
-            const baseUrl = `${environment}/AutoSubmit`;
+            const baseUrl = `${envUrl}/AutoSubmit`;
             let url = '';
             try{
                 url = new URL(baseUrl);
