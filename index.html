@@ -191,7 +191,7 @@
 
             // Set iframe src
             iframe.src = url.toString();
-            reload_iframe_utils_js(environment ? `${environment}/js/merchant-iframe-utils.js` : 'https://localhost:44349/js/merchant-iframe-utils.js');
+            reload_iframe_utils_js(envUrl ? `${envUrl}/js/merchant-iframe-utils.js` : 'https://localhost:44349/js/merchant-iframe-utils.js');
 
             // Hide popup
             overlay.style.display = 'none';
