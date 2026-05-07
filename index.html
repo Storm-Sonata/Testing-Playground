@@ -95,10 +95,21 @@
                     </label>
                 </div>
 
-                <label>
-                    <b>Environment URL (Optional):</b>
-                    <input type="text" id="environmentUrl" />
-                </label>
+                <div class="radio-group">
+                    <b>Environment:</b>
+                    <label>
+                        <input type="radio" name="environment" value="UAT" checked />
+                        UAT
+                    </label>
+                    <label>
+                        <input type="radio" name="environment" value="DEV" disabled />
+                        Development
+                    </label>
+                    <label>
+                        <input type="radio" name="environment" value="Local" />
+                        Local
+                    </label>
+                </div>
                 <label>
                     <b>Callback URL (Optional):</b>
                     <input type="text" id="callbackUrl" />
@@ -116,7 +127,7 @@
     </div>
 
     <!-- Iframe to load URL -->
-    <iframe id="contentIframe" src=""></iframe>
+    <iframe id="contentIframe" src="" allow="payment"></iframe>
 
     <script>
         // Get references
@@ -136,10 +147,23 @@
             const token = document.getElementById('urlToken').value.trim();
             const showLogo = document.getElementById('showLogo').checked;
             const requestType = document.querySelector('input[name="requestType"]:checked').value;
-            const environment = removeTrailingSlash(document.getElementById('environmentUrl').value.trim());
+            const environment = document.querySelector('input[name="environment"]:checked').value;
 
             // Construct URL with query params
-            const baseUrl = environment ? `${environment}/AutoSubmit` : 'https://localhost:44349/AutoSubmit';
+            switch(environment) {
+                case 'UAT':
+                    environment = 'https://uat.mbdirectweb.cardworks.com';
+                    break;
+                case 'DEV':
+                    environment = '';
+                    break;
+                case 'Local':
+                    environment = 'https://localhost:44349';
+                    break;
+                default:
+                    environment = '';
+            }
+            const baseUrl = `${environment}/AutoSubmit`;
             let url = '';
             try{
                 url = new URL(baseUrl);
