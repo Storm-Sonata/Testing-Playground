@@ -176,6 +176,7 @@
             url.searchParams.set('urlToken', token);
             showLogo ? {} : url.searchParams.set('br', 'no');
             url.searchParams.set('requestType', requestType);
+            url.searchParams.set('MerchantReferenceAccountId', generate20DigitMerchantReferenceAccountId());
 
             // Parse additional query parameters
             const extraParams = document.getElementById('extraQueryParams').value.trim();
@@ -232,6 +233,16 @@
         const removeTrailingSlash = (str) => {
             return str.replace(/\/+$/, '');
         };
+
+        function generate20DigitMerchantReferenceAccountId() {
+            const part1 = Math.floor(Math.random() * 90000) + 10000; // 5 digits
+            const part2 = Math.floor(Math.random() * 90000) + 10000; // 5 digits
+            const part3 = Math.floor(Math.random() * 90000) + 10000; // 5 digits
+            const part4 = Math.floor(Math.random() * 90000) + 10000; // 5 digits
+  
+            return `${part1}${part2}${part3}${part4}`;
+        };
+        
     </script>    
 </body>
 </html>
